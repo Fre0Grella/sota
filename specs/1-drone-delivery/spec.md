@@ -1,7 +1,8 @@
 # Feature: Drone delivery (drone-delivery)
 
 Created: 2025-11-02  
-Author: SotA team
+Author: Marco Galeri
+Version: 1.1.0
 
 ## Summary
 Provide an online service that allows users to request package deliveries via drones. Users can schedule immediate or future deliveries, specify package weight, request a delivery time window, and track progress in real time (location + remaining ETA).
@@ -58,8 +59,8 @@ FR-4 Dispatch & Command
 - For immediate or scheduled dispatch, the system MUST trigger a launch workflow that transitions the delivery through states: scheduled → preparing → enroute → delivering → completed/failed.
 
 FR-5 Real-time tracking
-- The system MUST provide live location (lat/lon), state, and ETA for any active delivery, with updates at least every 15 seconds under normal network conditions.
-- The delivered ETA MUST be recomputed and updated when significant deviations occur (e.g., >30 seconds difference from previous ETA).
+- The system MUST provide live location (lat/lon), state, and ETA for any active delivery, with updates at least every 10 minutes under normal network conditions.
+- The delivered ETA MUST be recomputed and updated when significant deviations occur (e.g., >5 minutes difference from previous ETA).
 
 FR-6 Notifications
 - The system MUST notify sender and recipient of key events: booking confirmation, drone dispatched, arrival ETA within configurable threshold (e.g., 5 min), delivery attempt, completion, failure.
@@ -76,7 +77,7 @@ FR-9 Cancellation & rescheduling
 FR-10 Observability & logs
 - The system MUST persist telemetry and delivery state transitions for post-incident review for a configurable retention period.
 
-## Non-functional Requirements (testable where possible)
+## Non-functional Requirements
 
 NFR-1 Availability
 - Core booking and tracking APIs MUST be available 99% over a 30-day rolling window (measurable).
@@ -85,12 +86,12 @@ NFR-2 Latency (user-facing)
 - System responses for booking and status queries MUST return within 2 seconds 90% of the time under normal load.
 
 NFR-3 Timeliness of tracking updates
-- Live tracking updates MUST be available to users at least every 15 seconds in normal conditions.
+- Live tracking updates MUST be available to users at least every 10 minutes in normal conditions.
 
 NFR-4 Data retention & privacy
 - Delivery records and telemetry MUST be retained according to policy; personal location data MUST be handled per privacy requirements (assumed compliance: redact/export on request).
 
-## Success Criteria (measurable, tech-agnostic)
+## Success Criteria
 
 SC-1 Booking lead time
 - 95% of immediate delivery requests that are feasible get confirmed within 2 minutes of request submission.
@@ -99,7 +100,7 @@ SC-2 On-time deliveries
 - At least 90% of completed deliveries finish within the user-specified requested window or within the agreed SLA.
 
 SC-3 Tracking fidelity
-- 95% of active deliveries show location and ETA updates at least every 15 seconds during the enroute phase.
+- 95% of active deliveries show location and ETA updates at least every 10 minutes during the enroute phase.
 
 SC-4 Recovery & notification
 - For delivery failures requiring customer action, 95% of affected customers receive the first notification within 3 minutes of detection.
@@ -149,8 +150,3 @@ SC-5 Auditability
 - Tracking API with telemetry+ETA
 - Notification hooks for events
 - Audit record store for proof of delivery
-
-## Next steps
-- Create ADRs for payload classes, SLA definitions, and privacy/data-retention policies.
-- Prototype UI for booking + live tracking demo.
-- Define test harness to simulate telemetry and failures for acceptance tests.
